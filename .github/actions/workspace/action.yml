@@ -1,0 +1,48 @@
+name: Syncloom workspace
+description: >-
+  Checks out the sibling component repositories next to syncloom-deploy, which is how server.Dockerfile
+  and web.Dockerfile expect them (build context = the folder that holds all of them).
+inputs:
+  tag:
+    description: Release tag. Each component is checked out at the same tag if it has one, otherwise at main.
+    default: ''
+runs:
+  using: composite
+  steps:
+    - id: refs
+      shell: bash
+      env:
+        TAG: ${{ inputs.tag }}
+      run: |
+        for c in core server web; do
+          ref=main
+          if [ -n "$TAG" ] && git ls-remote --exit-code --tags "https://github.com/Syncloom/syncloom-$c" "refs/tags/$TAG" >/dev/null 2>&1; then
+            ref="$TAG"
+          fi
+          echo "$c=$ref" >> "$GITHUB_OUTPUT"
+        done
+    - uses: actions/checkout@fbc6f3992d24b796d5a048ff273f7fcc4a7b6c09 # v5
+      with:
+        repository: Syncloom/syncloom-core
+        ref: ${{ steps.refs.outputs.core }}
+        path: syncloom-core
+        persist-credentials: false
+    - uses: actions/checkout@fbc6f3992d24b796d5a048ff273f7fcc4a7b6c09 # v5
+      with:
+        repository: Syncloom/syncloom-server
+        ref: ${{ steps.refs.outputs.server }}
+        path: syncloom-server
+        persist-credentials: false
+    - uses: actions/checkout@fbc6f3992d24b796d5a048ff273f7fcc4a7b6c09 # v5
+      with:
+        repository: Syncloom/syncloom-web
+        ref: ${{ steps.refs.outputs.web }}
+        path: syncloom-web
+        persist-credentials: false
+    - name: Record what is being built
+      shell: bash
+      run: |
+        {
+          echo "### Components"
+          for c in core server web deploy; do echo "- syncloom-$c @ $(git -C syncloom-$c rev-parse --short HEAD)"; done
+        } >> "$GITHUB_STEP_SUMMARY"
