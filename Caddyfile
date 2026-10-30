@@ -1,0 +1,25 @@
+{$SYNCLOOM_DOMAIN} {
+	encode zstd gzip
+
+	# REST API, health, gRPC and gRPC-Web all go to the server (HTTP/2 without TLS inside the network)
+	@server path /api/* /health /syncloom.sync.v1.Sync/*
+	handle @server {
+		reverse_proxy server:8080 {
+			transport http {
+				versions h2c
+			}
+			flush_interval -1
+		}
+	}
+
+	# everything else is the web app
+	handle {
+		reverse_proxy web:80
+	}
+
+	header {
+		Strict-Transport-Security "max-age=31536000"
+		X-Content-Type-Options nosniff
+		Referrer-Policy no-referrer
+	}
+}

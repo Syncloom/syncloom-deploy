@@ -1,0 +1,11 @@
+# Full stack over plain HTTP on http://localhost:8088, for browser tests and local trials (no TLS).
+#   docker compose -f docker-compose.yml -f docker-compose.test.yml up -d --build
+services:
+  server:
+    environment:
+      PUBLIC_URL: http://localhost:8088
+  caddy:
+    ports: !override
+      - "8088:80"
+    environment:
+      SYNCLOOM_DOMAIN: http://localhost

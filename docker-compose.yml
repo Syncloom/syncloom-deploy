@@ -1,0 +1,77 @@
+# Syncloom: server + web + Postgres behind Caddy (automatic HTTPS).
+#   cp .env.example .env   # set SYNCLOOM_DOMAIN and POSTGRES_PASSWORD
+#   docker compose up -d
+name: syncloom
+
+services:
+  db:
+    image: postgres:17-alpine
+    restart: unless-stopped
+    environment:
+      POSTGRES_USER: syncloom
+      POSTGRES_DB: syncloom
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD:?set POSTGRES_PASSWORD in .env}
+    volumes:
+      - pgdata:/var/lib/postgresql/data
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U syncloom -d syncloom"]
+      interval: 5s
+      timeout: 3s
+      retries: 20
+
+  server:
+    build:
+      context: ..
+      dockerfile: syncloom-deploy/server.Dockerfile
+    image: syncloom-server:${SYNCLOOM_VERSION:-latest}
+    restart: unless-stopped
+    depends_on:
+      db:
+        condition: service_healthy
+    environment:
+      DATABASE_URL: postgres://syncloom:${POSTGRES_PASSWORD}@db:5432/syncloom
+      # WebAuthn (security keys) and OIDC need to know the public address
+      PUBLIC_URL: https://${SYNCLOOM_DOMAIN:?set SYNCLOOM_DOMAIN in .env}
+      BLOB_BACKEND: ${BLOB_BACKEND:-fs}
+      S3_BUCKET: ${S3_BUCKET:-}
+      S3_REGION: ${S3_REGION:-}
+      S3_ENDPOINT: ${S3_ENDPOINT:-}
+      S3_ACCESS_KEY: ${S3_ACCESS_KEY:-}
+      S3_SECRET_KEY: ${S3_SECRET_KEY:-}
+      OIDC_ISSUER: ${OIDC_ISSUER:-}
+      OIDC_CLIENT_ID: ${OIDC_CLIENT_ID:-}
+      OIDC_CLIENT_SECRET: ${OIDC_CLIENT_SECRET:-}
+      OIDC_AUTO_PROVISION: ${OIDC_AUTO_PROVISION:-false}
+      LOCAL_AUTH: ${LOCAL_AUTH:-true}
+    volumes:
+      - blobs:/data
+
+  web:
+    build:
+      context: ..
+      dockerfile: syncloom-deploy/web.Dockerfile
+    image: syncloom-web:${SYNCLOOM_VERSION:-latest}
+    restart: unless-stopped
+
+  caddy:
+    image: caddy:2-alpine
+    restart: unless-stopped
+    depends_on:
+      - server
+      - web
+    ports:
+      - "80:80"
+      - "443:443"
+      - "443:443/udp"
+    environment:
+      SYNCLOOM_DOMAIN: ${SYNCLOOM_DOMAIN}
+    volumes:
+      - ./Caddyfile:/etc/caddy/Caddyfile:ro
+      - caddy_data:/data
+      - caddy_config:/config
+
+volumes:
+  pgdata:
+  blobs:
+  caddy_data:
+  caddy_config:
