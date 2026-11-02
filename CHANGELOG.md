@@ -2,6 +2,11 @@
 
 All notable changes to this project are documented here. The format follows [Keep a Changelog](https://keepachangelog.com/en/1.1.0/) and the project uses [semantic versioning](https://semver.org/). Syncloom is a public preview until 1.0.
 
+## [Unreleased]
+
+### Added
+- `SYNCLOOM_HTTP_PORT` and `SYNCLOOM_HTTPS_PORT` choose the published ports (defaults 80 and 443), for hosts where those are taken. `SYNCLOOM_HTTPS_PORT` must match the port in `SYNCLOOM_DOMAIN`.
+
 ## [0.1.1] - 2026-11-02
 
 ### Changed
