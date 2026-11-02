@@ -5,7 +5,7 @@ All notable changes to this project are documented here. The format follows [Kee
 ## [Unreleased]
 
 ### Added
-- `SYNCLOOM_HTTP_PORT` and `SYNCLOOM_HTTPS_PORT` choose the published ports (defaults 80 and 443), for hosts where those are taken. `SYNCLOOM_HTTPS_PORT` must match the port in `SYNCLOOM_DOMAIN`.
+- `SYNCLOOM_HTTP_PORT` and `SYNCLOOM_HTTPS_PORT` choose the published ports (defaults 80 and 443), for hosts where those are taken. `SYNCLOOM_HTTPS_PORT` must match the port in `SYNCLOOM_DOMAIN` `SYNCLOOM_HTTP_BIND` restricts the HTTP port to one address..
 
 ## [0.1.1] - 2026-11-02
 
