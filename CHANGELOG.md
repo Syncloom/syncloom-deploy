@@ -2,6 +2,11 @@
 
 All notable changes to this project are documented here. The format follows [Keep a Changelog](https://keepachangelog.com/en/1.1.0/) and the project uses [semantic versioning](https://semver.org/). Syncloom is a public preview until 1.0.
 
+## [0.1.3] - 2026-11-02
+
+### Changed
+- The `syncloom-web` image contains web 0.1.1: the Share dialog no longer breaks on long links, and downloads keep their name and extension in Safari and Firefox.
+
 ## [0.1.2] - 2026-11-02
 
 ### Changed
