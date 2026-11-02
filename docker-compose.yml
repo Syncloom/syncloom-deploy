@@ -1,6 +1,6 @@
 # Syncloom: server + web + Postgres behind Caddy (automatic HTTPS).
 #   cp .env.example .env   # set SYNCLOOM_DOMAIN and POSTGRES_PASSWORD
-#   docker compose up -d
+#   docker compose up -d      # pulls the published images from Docker Hub
 name: syncloom
 
 services:
@@ -20,10 +20,7 @@ services:
       retries: 20
 
   server:
-    build:
-      context: ..
-      dockerfile: syncloom-deploy/server.Dockerfile
-    image: syncloom-server:${SYNCLOOM_VERSION:-latest}
+    image: svenwal/syncloom-server:${SYNCLOOM_VERSION:-0.1.1}
     restart: unless-stopped
     depends_on:
       db:
@@ -47,10 +44,7 @@ services:
       - blobs:/data
 
   web:
-    build:
-      context: ..
-      dockerfile: syncloom-deploy/web.Dockerfile
-    image: syncloom-web:${SYNCLOOM_VERSION:-latest}
+    image: svenwal/syncloom-web:${SYNCLOOM_VERSION:-0.1.1}
     restart: unless-stopped
 
   caddy:

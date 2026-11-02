@@ -9,9 +9,15 @@ git clone https://github.com/Syncloom/syncloom-deploy.git && cd syncloom-deploy
 cp .env.example .env              # set SYNCLOOM_DOMAIN and POSTGRES_PASSWORD
 docker compose up -d
 ```
-Trial on your own machine over plain HTTP: `docker compose -f docker-compose.yml -f docker-compose.test.yml up -d`, then open <http://localhost:8088>. The images build from the sibling repositories (`../syncloom-server`, `../syncloom-web`, `../syncloom-core`).
+Trial on your own machine over plain HTTP: `docker compose -f docker-compose.yml -f docker-compose.test.yml up -d`, then open <http://localhost:8088>. `docker compose` pulls the published images [`svenwal/syncloom-server`](https://hub.docker.com/r/svenwal/syncloom-server) and [`svenwal/syncloom-web`](https://hub.docker.com/r/svenwal/syncloom-web) (amd64 and arm64). Set `SYNCLOOM_VERSION` in `.env` to choose another tag.
 
-## Working with the other repositories
+To build the images from source instead, clone `syncloom-core`, `syncloom-server` and `syncloom-web` next to this folder and add the build file:
+
+```bash
+docker compose -f docker-compose.yml -f docker-compose.build.yml up -d --build
+```
+
+## Building from source
 
 The Syncloom repositories reference each other by relative path. Clone the ones you need **side by side in one folder**, for example `syncloom-core`, `syncloom-server` and `syncloom-web` next to each other.
 

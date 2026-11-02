@@ -1,5 +1,5 @@
 # Full stack over plain HTTP on http://localhost:8088, for browser tests and local trials (no TLS).
-#   docker compose -f docker-compose.yml -f docker-compose.test.yml up -d --build
+#   docker compose -f docker-compose.yml -f docker-compose.test.yml up -d
 services:
   server:
     environment:

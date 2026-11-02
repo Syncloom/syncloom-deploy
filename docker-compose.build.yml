@@ -1,0 +1,13 @@
+# Build the images from source instead of pulling them. Needs syncloom-core, -server and -web next to this folder.
+#   docker compose -f docker-compose.yml -f docker-compose.build.yml up -d --build
+services:
+  server:
+    build:
+      context: ..
+      dockerfile: syncloom-deploy/server.Dockerfile
+    image: syncloom-server:local
+  web:
+    build:
+      context: ..
+      dockerfile: syncloom-deploy/web.Dockerfile
+    image: syncloom-web:local

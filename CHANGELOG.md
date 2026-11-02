@@ -2,6 +2,12 @@
 
 All notable changes to this project are documented here. The format follows [Keep a Changelog](https://keepachangelog.com/en/1.1.0/) and the project uses [semantic versioning](https://semver.org/). Syncloom is a public preview until 1.0.
 
+## [0.1.1] - 2026-11-02
+
+### Changed
+- `docker compose up -d` now pulls the published images `svenwal/syncloom-server` and `svenwal/syncloom-web` from Docker Hub; a lone clone of this repository is enough. `SYNCLOOM_VERSION` selects the tag.
+- Building from source moved to `docker-compose.build.yml` (add it as a second `-f`).
+
 ## [0.1.0] - 2026-11-02
 
 First public preview.
