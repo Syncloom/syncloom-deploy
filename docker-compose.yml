@@ -25,6 +25,8 @@ services:
     depends_on:
       db:
         condition: service_healthy
+      files-init:
+        condition: service_completed_successfully
     environment:
       DATABASE_URL: postgres://syncloom:${POSTGRES_PASSWORD}@db:5432/syncloom
       # WebAuthn (security keys) and OIDC need to know the public address
@@ -41,7 +43,15 @@ services:
       OIDC_AUTO_PROVISION: ${OIDC_AUTO_PROVISION:-false}
       LOCAL_AUTH: ${LOCAL_AUTH:-true}
     volumes:
-      - blobs:/data
+      - ${SYNCLOOM_FILES_DIR:-./files}:/data
+
+  # the files folder is created by Docker as root: hand it to the server user (uid 10001) once before start
+  files-init:
+    image: svenwal/syncloom-server:${SYNCLOOM_VERSION:-0.1.1}
+    user: "0"
+    entrypoint: ["sh", "-c", "mkdir -p /data/blobs && chown 10001 /data /data/blobs"]
+    volumes:
+      - ${SYNCLOOM_FILES_DIR:-./files}:/data
 
   web:
     image: svenwal/syncloom-web:${SYNCLOOM_VERSION:-0.1.1}
@@ -68,6 +78,5 @@ services:
 
 volumes:
   pgdata:
-  blobs:
   caddy_data:
   caddy_config:
