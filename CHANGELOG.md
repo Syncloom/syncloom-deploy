@@ -2,7 +2,7 @@
 
 All notable changes to this project are documented here. The format follows [Keep a Changelog](https://keepachangelog.com/en/1.1.0/) and the project uses [semantic versioning](https://semver.org/). Syncloom is a public preview until 1.0.
 
-## [Unreleased]
+## [0.1.2] - 2026-11-02
 
 ### Changed
 - Encrypted file chunks now live in the folder `./files` next to `docker-compose.yml` (`SYNCLOOM_FILES_DIR` changes it) instead of the Docker volume `blobs`. The folder is Git-ignored. A one-shot `files-init` service hands it to the server user. **Upgrading:** copy the old volume into the folder first, e.g. `docker run --rm -v syncloom_blobs:/from -v "$PWD/files":/to alpine cp -a /from/. /to/`, then `chown -R 10001 files`.
