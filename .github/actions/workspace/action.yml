@@ -21,19 +21,19 @@ runs:
           fi
           echo "$c=$ref" >> "$GITHUB_OUTPUT"
         done
-    - uses: actions/checkout@fbc6f3992d24b796d5a048ff273f7fcc4a7b6c09 # v5
+    - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
       with:
         repository: Syncloom/syncloom-core
         ref: ${{ steps.refs.outputs.core }}
         path: syncloom-core
         persist-credentials: false
-    - uses: actions/checkout@fbc6f3992d24b796d5a048ff273f7fcc4a7b6c09 # v5
+    - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
       with:
         repository: Syncloom/syncloom-server
         ref: ${{ steps.refs.outputs.server }}
         path: syncloom-server
         persist-credentials: false
-    - uses: actions/checkout@fbc6f3992d24b796d5a048ff273f7fcc4a7b6c09 # v5
+    - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
       with:
         repository: Syncloom/syncloom-web
         ref: ${{ steps.refs.outputs.web }}
